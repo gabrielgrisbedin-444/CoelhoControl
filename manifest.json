@@ -1,0 +1,13 @@
+{
+  "name": "CoelhoControl",
+  "short_name": "CoelhoControl",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f7f6",
+  "theme_color": "#159447",
+  "description": "Controle da criação de coelhos: matrizes, reprodução, partos, desmames, saúde e relatórios.",
+  "icons": [
+    {"src":"icon-180.png","sizes":"180x180","type":"image/png","purpose":"any maskable"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}

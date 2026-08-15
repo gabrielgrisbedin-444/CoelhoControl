@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#159447">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="CoelhoControl">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>CoelhoControl</title>
+<style>
+:root{--g:#159447;--gl:#eaf8ef;--text:#183027;--muted:#6b7b74;--bg:#f5f7f6;--card:#fff;--line:#e2e9e5}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:var(--g);color:#fff;padding:18px 16px 14px;position:sticky;top:0;z-index:5}
+h1,h2,h3,p{margin:0}.top{display:flex;justify-content:space-between;align-items:center}.brand{font-size:22px;font-weight:800}
+main{max-width:760px;margin:auto;padding:16px 16px 90px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 2px 8px #00000008}
+.stat b{display:block;font-size:25px;color:var(--g)}.stat span{font-size:12px;color:var(--muted)}
+.section{margin:20px 0 10px;font-size:16px}.event{display:flex;gap:10px;align-items:center;margin:8px 0}.dot{width:10px;height:10px;border-radius:50%;background:var(--g);flex:none}
+button{border:0;border-radius:10px;padding:11px 14px;background:var(--g);color:#fff;font-weight:700;cursor:pointer}.secondary{background:#edf5ef;color:var(--g)}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;z-index:10}
+nav button{background:transparent;color:var(--muted);border-radius:0;flex:1;max-width:150px;font-size:11px;padding:10px 4px}nav button.active{color:var(--g)}
+.page{display:none}.page.active{display:block}.row{display:flex;justify-content:space-between;gap:8px;align-items:center}.rabbit{padding:12px 0;border-bottom:1px solid var(--line)}.tag{font-size:11px;padding:5px 8px;border-radius:8px;background:#eaf8ef;color:#16743b}
+label{display:block;font-size:12px;font-weight:700;margin:12px 0 5px}input,select,textarea{width:100%;padding:11px;border:1px solid #d5dfda;border-radius:9px;background:#fff;font:inherit}textarea{min-height:70px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.actions{display:flex;gap:8px;margin-top:14px}.actions button{flex:1}
+.empty{color:var(--muted);padding:20px 0;text-align:center}
+@media(max-width:480px){main{padding:14px 12px 90px}.formgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="top"><div class="brand">🐇 CoelhoControl</div><div>🔔</div></div></header>
+<main>
+<section id="home" class="page active">
+<h2>Olá! 👋</h2><p style="color:var(--muted);margin-top:4px">Controle da sua criação de coelhos</p>
+<div class="grid" style="margin-top:14px">
+<div class="card stat"><b id="sM">0</b><span>Matrizes</span></div>
+<div class="card stat"><b id="sP">0</b><span>Fêmeas prenhes</span></div>
+<div class="card stat"><b id="sN">0</b><span>Nascidos</span></div>
+<div class="card stat"><b id="sD">0</b><span>Desmamados</span></div>
+</div>
+<h3 class="section">Próximos eventos</h3><div id="events" class="card"></div>
+</section>
+
+<section id="matrizes" class="page">
+<div class="row"><h2>Matrizes</h2><button onclick="show('nova')">+ Nova</button></div>
+<div id="list" class="card" style="margin-top:12px"></div>
+</section>
+
+<section id="nova" class="page">
+<h2>Nova matriz</h2>
+<div class="card" style="margin-top:12px"><div class="formgrid">
+<div><label>Número</label><input id="mnum" placeholder="M01"></div>
+<div><label>Nome</label><input id="mname" placeholder="Coelha 01"></div>
+<div><label>Raça</label><input id="mrace" placeholder="Nova Zelândia"></div>
+<div><label>Data de nascimento</label><input id="mbirth" type="date"></div>
+<div class="full"><label>Observações</label><textarea id="mobs"></textarea></div>
+</div><div class="actions"><button class="secondary" onclick="show('matrizes')">Cancelar</button><button onclick="saveM()">Salvar matriz</button></div></div>
+</section>
+
+<section id="repro" class="page">
+<div class="row"><h2>Reprodução</h2><button onclick="show('cobertura')">+ Cobertura</button></div>
+<div class="card" style="margin-top:12px">
+<div class="formgrid"><div><label>Matriz</label><select id="rmat"></select></div><div><label>Macho</label><input id="rmacho" placeholder="R01"></div><div><label>Data da cobertura</label><input id="rcov" type="date"></div></div>
+<div class="actions"><button onclick="saveR()">Registrar cobertura</button></div></div>
+<h3 class="section">Partos e desmames</h3><div id="history" class="card"></div>
+</section>
+
+<section id="cobertura" class="page">
+<h2>Nova cobertura</h2><div class="card" style="margin-top:12px">
+<label>Matriz</label><select id="cmat"></select><label>Macho/reprodutor</label><input id="cmacho" placeholder="R01 - Gigante">
+<label>Data da cobertura</label><input id="cdata" type="date"><p style="font-size:12px;color:var(--muted);margin-top:10px">A previsão do parto será calculada automaticamente.</p>
+<div class="actions"><button class="secondary" onclick="show('repro')">Cancelar</button><button onclick="saveCob()">Salvar cobertura</button></div></div>
+</section>
+
+<section id="parto" class="page">
+<h2>Novo parto</h2><div class="card" style="margin-top:12px">
+<label>Matriz</label><select id="bmat"></select><label>Data do parto</label><input id="bdata" type="date">
+<div class="formgrid"><div><label>Nascidos</label><input id="bn" type="number" min="0"></div><div><label>Vivos</label><input id="bv" type="number" min="0"></div><div><label>Mortos</label><input id="bm" type="number" min="0"></div></div>
+<label>Observações</label><textarea id="bobs"></textarea><div class="actions"><button onclick="saveBirth()">Salvar parto</button></div></div>
+</section>
+
+<section id="desmame" class="page">
+<h2>Novo desmame</h2><div class="card" style="margin-top:12px">
+<label>Matriz</label><select id="dmat"></select><div class="formgrid"><div><label>Data nascimento</label><input id="dnasc" type="date"></div><div><label>Data desmame</label><input id="ddes" type="date"></div><div><label>Quantidade</label><input id="dq" type="number" min="0"></div><div><label>Peso médio (kg)</label><input id="dp" type="number" step="0.01"></div></div>
+<label>Destino</label><select id="ddest"><option>Engorda</option><option>Reprodução</option><option>Venda</option></select><div class="actions"><button onclick="saveWean()">Salvar desmame</button></div></div>
+</section>
+
+<section id="saude" class="page">
+<div class="row"><h2>Vacinas e medicamentos</h2><button onclick="addHealth()">+ Registrar</button></div><div id="health" class="card" style="margin-top:12px"></div>
+</section>
+
+<section id="rel" class="page">
+<h2>Relatórios</h2><div class="grid" style="margin-top:12px">
+<div class="card stat"><b id="rrN">0</b><span>Total nascidos</span></div><div class="card stat"><b id="rrD">0</b><span>Total desmamados</span></div><div class="card stat"><b id="rrP">0</b><span>Partos registrados</span></div><div class="card stat"><b id="rrM">0%</b><span>Taxa de mortalidade</span></div>
+</div></section>
+</main>
+<nav>
+<button class="active" onclick="show('home',this)">🏠<br>Início</button>
+<button onclick="show('matrizes',this)">🐰<br>Matrizes</button>
+<button onclick="show('repro',this)">❤️<br>Reprodução</button>
+<button onclick="show('saude',this)">💉<br>Saúde</button>
+<button onclick="show('rel',this)">📊<br>Relatórios</button>
+</nav>
+<script>
+const key='coelhocontrol_v1';
+let db=JSON.parse(localStorage.getItem(key)||'{"matrizes":[],"coberturas":[],"partos":[],"desmames":[],"saude":[]}');
+const save=()=>localStorage.setItem(key,JSON.stringify(db));
+const today=()=>new Date().toISOString().slice(0,10);
+function show(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(btn){document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}render();window.scrollTo(0,0)}
+function opts(id){document.getElementById(id).innerHTML=db.matrizes.map(m=>`<option value="${m.id}">${m.num} - ${m.name}</option>`).join('')}
+function render(){
+document.getElementById('sM').textContent=db.matrizes.length;
+document.getElementById('sP').textContent=db.coberturas.filter(x=>x.status==='Prenhe').length;
+document.getElementById('sN').textContent=db.partos.reduce((a,x)=>a+(+x.n||0),0);
+document.getElementById('sD').textContent=db.desmames.reduce((a,x)=>a+(+x.q||0),0);
+document.getElementById('list').innerHTML=db.matrizes.length?db.matrizes.map(m=>`<div class="rabbit"><div class="row"><div><b>${m.num} - ${m.name}</b><div style="font-size:12px;color:var(--muted)">${m.race||''}</div></div><span class="tag">${m.status||'Disponível'}</span></div></div>`).join(''):'<div class="empty">Nenhuma matriz cadastrada.</div>';
+['rmat','cmat','bmat','dmat'].forEach(opts);
+document.getElementById('history').innerHTML=[...db.partos.map(x=>`<div class="rabbit">🐣 <b>Parto</b> — ${x.date} — ${x.v} vivos (${x.m} mortos)</div>`),...db.desmames.map(x=>`<div class="rabbit">🍼 <b>Desmame</b> — ${x.date} — ${x.q} coelhos</div>`)].join('')||'<div class="empty">Nenhum registro ainda.</div>';
+document.getElementById('health').innerHTML=db.saude.length?db.saude.map(x=>`<div class="rabbit">💉 <b>${x.prod}</b><br><small>${x.animal} — aplicado em ${x.date}${x.next?' — próxima: '+x.next:''}</small></div>`).join(''):'<div class="empty">Nenhum medicamento ou vacina registrado.</div>';
+let n=db.partos.reduce((a,x)=>a+(+x.n||0),0),v=db.partos.reduce((a,x)=>a+(+x.v||0),0),m=db.partos.reduce((a,x)=>a+(+x.m||0),0);
+document.getElementById('rrN').textContent=n;document.getElementById('rrD').textContent=db.desmames.reduce((a,x)=>a+(+x.q||0),0);document.getElementById('rrP').textContent=db.partos.length;document.getElementById('rrM').textContent=n?Math.round(m/n*100)+'%':'0%';
+let ev=[];db.coberturas.filter(x=>x.status==='Prenhe').forEach(x=>ev.push(`🤰 Parto previsto — ${x.date}`));db.desmames.forEach(x=>ev.push(`🍼 Desmame — ${x.date}`));document.getElementById('events').innerHTML=ev.length?ev.slice(0,6).map(x=>`<div class="event"><span class="dot"></span>${x}</div>`).join(''):'<div class="empty">Nenhum evento cadastrado.</div>';
+}
+function saveM(){let m={id:Date.now(),num:mnum.value,name:mname.value,race:mrace.value,birth:mbirth.value,obs:mobs.value,status:'Disponível'};if(!m.num||!m.name)return alert('Informe número e nome.');db.matrizes.push(m);save();show('matrizes')}
+function saveR(){if(!rmat.value)return alert('Cadastre uma matriz primeiro.');db.coberturas.push({id:Date.now(),mat:rmat.value,macho:rmacho.value,date:rcov.value,status:'Aguardando'});save();alert('Cobertura registrada.');show('repro')}
+function saveCob(){let d=new Date(cdata.value+'T12:00:00');d.setDate(d.getDate()+31);db.coberturas.push({id:Date.now(),mat:cmat.value,macho:cmacho.value,date:d.toISOString().slice(0,10),status:'Prenhe',coverage:cdata.value});save();alert('Cobertura salva e parto previsto para '+d.toLocaleDateString('pt-BR')+'.');show('repro')}
+function saveBirth(){let x={id:Date.now(),mat:bmat.value,date:bdata.value||today(),n:bn.value,v:bv.value,m:bm.value,obs:bobs.value};db.partos.push(x);save();alert('Parto salvo!');show('repro')}
+function saveWean(){db.desmames.push({id:Date.now(),mat:dmat.value,date:ddes.value||today(),birth:dnasc.value,q:dq.value,p:dp.value,dest:ddest.value});save();alert('Desmame salvo!');show('repro')}
+function addHealth(){let animal=prompt('Animal/matriz:');if(!animal)return;let prod=prompt('Vacina/medicamento:');if(!prod)return;let date=prompt('Data (AAAA-MM-DD):',today());let next=prompt('Próxima aplicação (AAAA-MM-DD), se houver:','');db.saude.push({animal,prod,date,next});save();render()}
+render();
+</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script></body></html>
