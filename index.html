@@ -3,10 +3,109 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="refresh" content="0;url=I%CC%81ndex%20.html">
+<meta name="theme-color" content="#159447">
 <title>CoelhoControl</title>
+<style>
+:root{--g:#159447;--gl:#eaf8ef;--t:#183027;--m:#6b7b74;--bg:#f5f7f6;--l:#e2e9e5;--r:#c0392b}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--t)}
+header{background:var(--g);color:#fff;padding:16px;position:sticky;top:0;z-index:5}.brand{font-size:21px;font-weight:800}
+main{max-width:780px;margin:auto;padding:16px 14px 100px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:#fff;border:1px solid var(--l);border-radius:14px;padding:14px}.page{display:none}.page.active{display:block}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center}.stat b{display:block;font-size:24px;color:var(--g)}.stat span,.small{font-size:12px;color:var(--m)}
+.item{padding:12px 0;border-bottom:1px solid var(--l)}.item:last-child{border:0}.empty{padding:18px;text-align:center;color:var(--m)}
+button{border:0;border-radius:10px;padding:10px 13px;background:var(--g);color:#fff;font-weight:700}.secondary{background:var(--gl);color:var(--g)}.danger{background:#fdecea;color:var(--r)}
+.actions{display:flex;gap:8px;margin-top:10px}.actions button{flex:1}label{display:block;font-size:12px;font-weight:700;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #d5dfda;border-radius:9px;background:#fff;font:inherit}textarea{min-height:70px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--l);display:flex;z-index:10;overflow-x:auto}nav button{background:transparent;color:var(--m);border-radius:0;min-width:78px;flex:1;font-size:10px}nav button.active{color:var(--g)}
+.in{color:#168447}.out{color:var(--r)}.balance{font-size:28px;color:var(--g)}.tag{font-size:11px;padding:4px 7px;border-radius:8px;background:var(--gl);color:#16743b}
+@media(max-width:480px){.formgrid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-Abrindo o CoelhoControl...
+<header><div class="brand">🐇 CoelhoControl</div></header>
+<main>
+<section id="home" class="page active">
+<h2>Olá! 👋</h2><p class="small" style="font-size:16px">Controle da sua criação de coelhos</p>
+<div class="grid">
+<div class="card stat"><b id="sM">0</b><span>Matrizes</span></div><div class="card stat"><b id="sP">0</b><span>Fêmeas prenhes</span></div>
+<div class="card stat"><b id="sN">0</b><span>Nascidos</span></div><div class="card stat"><b id="sD">0</b><span>Desmamados</span></div>
+<div class="card stat"><b id="sSaldo">R$ 0,00</b><span>Saldo financeiro</span></div><div class="card stat"><b id="sRacao">0 kg</b><span>Ração disponível</span></div>
+<div class="card stat"><b id="sCarne">0 kg</b><span>Carne disponível</span></div>
+</div><h3>Próximos eventos</h3><div id="events" class="card"></div>
+</section>
+
+<section id="matrizes" class="page"><div class="row"><h2>Matrizes</h2><button onclick="novoM()">+ Nova</button></div><div id="list" class="card"></div></section>
+<section id="nova" class="page"><h2 id="mTitle">Nova matriz</h2><div class="card"><div class="formgrid">
+<div><label>Número</label><input id="mnum" placeholder="M01"></div><div><label>Nome</label><input id="mname" placeholder="Coelha 01"></div>
+<div><label>Raça</label><input id="mrace" placeholder="Nova Zelândia"></div><div><label>Nascimento</label><input id="mbirth" type="date"></div>
+<div class="full"><label>Observações</label><textarea id="mobs"></textarea></div></div><div class="actions"><button class="secondary" onclick="show('matrizes')">Cancelar</button><button onclick="saveM()">Salvar</button></div></div></section>
+
+<section id="repro" class="page"><div class="row"><h2>Reprodução</h2><button onclick="show('cobertura')">+ Cobertura</button></div><div id="history" class="card"></div><div class="actions"><button onclick="show('parto')">+ Parto</button><button onclick="show('desmame')">+ Desmame</button></div></section>
+<section id="cobertura" class="page"><h2>Nova cobertura</h2><div class="card"><label>Matriz</label><select id="cmat"></select><label>Macho</label><input id="cmacho" placeholder="R01"><label>Data</label><input id="cdata" type="date"><div class="actions"><button class="secondary" onclick="show('repro')">Cancelar</button><button onclick="saveCob()">Salvar</button></div></div></section>
+<section id="parto" class="page"><h2>Novo parto</h2><div class="card"><label>Matriz</label><select id="bmat"></select><label>Data</label><input id="bdata" type="date"><div class="formgrid"><div><label>Nascidos</label><input id="bn" type="number"></div><div><label>Vivos</label><input id="bv" type="number"></div><div><label>Mortos</label><input id="bm" type="number"></div></div><label>Observações</label><textarea id="bobs"></textarea><div class="actions"><button onclick="saveBirth()">Salvar parto</button></div></div></section>
+<section id="desmame" class="page"><h2>Novo desmame</h2><div class="card"><label>Matriz</label><select id="dmat"></select><div class="formgrid"><div><label>Data nascimento</label><input id="dnasc" type="date"></div><div><label>Data desmame</label><input id="ddes" type="date"></div><div><label>Quantidade</label><input id="dq" type="number"></div><div><label>Peso médio (kg)</label><input id="dp" type="number" step=".01"></div></div><label>Destino</label><select id="ddest"><option>Engorda</option><option>Reprodução</option><option>Venda</option></select><div class="actions"><button onclick="saveWean()">Salvar desmame</button></div></div></section>
+
+<section id="estoque" class="page"><div class="row"><h2>📦 Estoque</h2><button onclick="novoS()">+ Movimento</button></div>
+<div class="grid"><div class="card stat"><b id="eRacao">0 kg</b><span>Saldo de ração</span></div><div class="card stat"><b id="eCarne">0 kg</b><span>Saldo de carne</span></div></div>
+<h3>Entradas e saídas</h3><div id="stockList" class="card"></div></section>
+<section id="novoS" class="page"><h2 id="sTitle">Novo movimento</h2><div class="card"><div class="formgrid">
+<div><label>Tipo</label><select id="stipo"><option value="entrada">Entrada</option><option value="saida">Saída</option></select></div>
+<div><label>Produto</label><select id="sitem"><option value="racao">Ração</option><option value="carne">Carne</option></select></div>
+<div><label>Data</label><input id="sdata" type="date"></div><div><label>Quantidade (kg)</label><input id="sqtd" type="number" step=".01"></div>
+<div class="full"><label>Descrição</label><input id="sdesc" placeholder="Ex.: compra de 50 kg de ração"></div>
+<div class="full"><label>Observação</label><textarea id="sobs"></textarea></div></div><div class="actions"><button class="secondary" onclick="show('estoque')">Cancelar</button><button onclick="saveS()">Salvar movimento</button></div></div></section>
+
+<section id="financeiro" class="page"><div class="row"><h2>💰 Financeiro</h2><button onclick="novoF()">+ Lançamento</button></div><div class="grid"><div class="card stat"><b id="fE" class="in">R$ 0,00</b><span>Entradas</span></div><div class="card stat"><b id="fS" class="out">R$ 0,00</b><span>Saídas</span></div><div class="card stat" style="grid-column:1/-1"><b id="fB" class="balance">R$ 0,00</b><span>Saldo</span></div></div><h3>Lançamentos</h3><div id="finList" class="card"></div></section>
+<section id="novoF" class="page"><h2 id="fTitle">Novo lançamento</h2><div class="card"><div class="formgrid">
+<div><label>Tipo</label><select id="ftipo"><option value="entrada">Entrada</option><option value="saida">Saída</option></select></div>
+<div><label>Categoria</label><select id="fcat"><option>Venda de carne</option><option>Venda de coelhos</option><option>Ração</option><option>Medicamentos</option><option>Limpeza</option><option>Transporte</option><option>Manutenção</option><option>Abate</option><option>Embalagens</option><option>Outros</option></select></div>
+<div><label>Data</label><input id="fdata" type="date"></div><div><label>Valor (R$)</label><input id="fvalor" type="number" step=".01"></div>
+<div class="full"><label>Descrição</label><input id="fdesc"></div><div class="full"><label>Observação</label><textarea id="fobs"></textarea></div>
+</div><div class="actions"><button class="secondary" onclick="show('financeiro')">Cancelar</button><button onclick="saveF()">Salvar lançamento</button></div></div></section>
+
+<section id="rel" class="page"><h2>📊 Relatórios</h2><div class="grid"><div class="card stat"><b id="rrN">0</b><span>Nascidos</span></div><div class="card stat"><b id="rrD">0</b><span>Desmamados</span></div><div class="card stat"><b id="rrP">0</b><span>Partos</span></div><div class="card stat"><b id="rrM">0%</b><span>Mortalidade</span></div></div></section>
+</main>
+<nav>
+<button class="active" onclick="show('home',this)">🏠<br>Início</button><button onclick="show('matrizes',this)">🐇<br>Matrizes</button><button onclick="show('repro',this)">❤️<br>Reprodução</button><button onclick="show('estoque',this)">📦<br>Estoque</button><button onclick="show('financeiro',this)">💰<br>Financeiro</button><button onclick="show('rel',this)">📊<br>Relatórios</button>
+</nav>
+<script>
+const key='coelhocontrol_v1';let db=JSON.parse(localStorage.getItem(key)||'{}');
+db.matrizes=db.matrizes||[];db.coberturas=db.coberturas||[];db.partos=db.partos||[];db.desmames=db.desmames||[];db.financeiro=db.financeiro||[];db.estoque=db.estoque||[];
+let mid=null,sid=null,fid=null;
+const save=()=>localStorage.setItem(key,JSON.stringify(db)),today=()=>new Date().toISOString().slice(0,10);
+const money=v=>(Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const esc=s=>String(s??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]));
+function show(id,b){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(b){document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active')}render();scrollTo(0,0)}
+function opts(id){let e=document.getElementById(id);e.innerHTML=db.matrizes.map(m=>`<option value="${m.id}">${esc(m.num)} - ${esc(m.name)}</option>`).join('')||'<option value="">Cadastre uma matriz primeiro</option>'}
+function novoM(){mid=null;mTitle.textContent='Nova matriz';['mnum','mname','mrace','mbirth','mobs'].forEach(x=>document.getElementById(x).value='');show('nova')}
+function saveM(){let x={id:mid||Date.now(),num:mnum.value.trim(),name:mname.value.trim(),race:mrace.value.trim(),birth:mbirth.value,obs:mobs.value};if(!x.num||!x.name)return alert('Informe número e nome.');if(mid){let i=db.matrizes.findIndex(a=>a.id===mid);db.matrizes[i]={...db.matrizes[i],...x}}else db.matrizes.push(x);save();show('matrizes')}
+function editM(id){let x=db.matrizes.find(a=>a.id===id);mid=id;mTitle.textContent='Editar matriz';mnum.value=x.num;mname.value=x.name;mrace.value=x.race||'';mbirth.value=x.birth||'';mobs.value=x.obs||'';show('nova')}
+function delM(id){if(confirm('Excluir esta matriz?')){db.matrizes=db.matrizes.filter(x=>x.id!==id);save();render()}}
+function saveCob(){if(!cmat.value)return alert('Cadastre uma matriz.');db.coberturas.push({id:Date.now(),matriz:cmat.value,macho:cmacho.value,data:cdata.value||today()});save();show('repro')}
+function saveBirth(){if(!bmat.value)return alert('Cadastre uma matriz.');db.partos.push({id:Date.now(),matriz:bmat.value,data:bdata.value||today(),nasc:+bn.value||0,vivos:+bv.value||0,mortos:+bm.value||0,obs:bobs.value});save();show('repro')}
+function saveWean(){if(!dmat.value)return alert('Cadastre uma matriz.');db.desmames.push({id:Date.now(),matriz:dmat.value,nasc:dnasc.value,des:ddes.value||today(),q:+dq.value||0,peso:+dp.value||0,dest:ddest.value});save();show('repro')}
+function novoS(){sid=null;sTitle.textContent='Novo movimento';stipo.value='entrada';sitem.value='racao';sdata.value=today();sqtd.value='';sdesc.value='';sobs.value='';show('novoS')}
+function saveS(){let q=+sqtd.value||0;if(q<=0)return alert('Informe uma quantidade maior que zero.');let x={id:sid||Date.now(),tipo:stipo.value,item:sitem.value,data:sdata.value||today(),qtd:q,desc:sdesc.value,obs:sobs.value};if(sid){let i=db.estoque.findIndex(a=>a.id===sid);db.estoque[i]={...db.estoque[i],...x}}else db.estoque.push(x);save();show('estoque')}
+function editS(id){let x=db.estoque.find(a=>a.id===id);sid=id;sTitle.textContent='Editar movimento';stipo.value=x.tipo;sitem.value=x.item;sdata.value=x.data;sqtd.value=x.qtd;sdesc.value=x.desc||'';sobs.value=x.obs||'';show('novoS')}
+function delS(id){if(confirm('Excluir este movimento?')){db.estoque=db.estoque.filter(x=>x.id!==id);save();render()}}
+function novoF(){fid=null;fTitle.textContent='Novo lançamento';ftipo.value='entrada';fcat.value='Outros';fdata.value=today();fvalor.value='';fdesc.value='';fobs.value='';show('novoF')}
+function saveF(){let v=+fvalor.value||0;if(v<=0)return alert('Informe um valor maior que zero.');let x={id:fid||Date.now(),tipo:ftipo.value,cat:fcat.value,data:fdata.value||today(),valor:v,desc:fdesc.value,obs:fobs.value};if(fid){let i=db.financeiro.findIndex(a=>a.id===fid);db.financeiro[i]={...db.financeiro[i],...x}}else db.financeiro.push(x);save();show('financeiro')}
+function editF(id){let x=db.financeiro.find(a=>a.id===id);fid=id;fTitle.textContent='Editar lançamento';ftipo.value=x.tipo;fcat.value=x.cat||'Outros';fdata.value=x.data;fvalor.value=x.valor;fdesc.value=x.desc||'';fobs.value=x.obs||'';show('novoF')}
+function delF(id){if(confirm('Excluir este lançamento?')){db.financeiro=db.financeiro.filter(x=>x.id!==id);save();render()}}
+function nm(id){let x=db.matrizes.find(a=>String(a.id)===String(id));return x?x.num+' - '+x.name:'Matriz não encontrada'}
+function bal(item){return db.estoque.filter(x=>x.item===item).reduce((a,x)=>a+(x.tipo==='entrada'?+x.qtd:-+x.qtd),0)}
+function render(){
+['cmat','bmat','dmat'].forEach(opts);let p=db.coberturas.filter(x=>Date.now()-new Date(x.data).getTime()<31*86400000);
+let n=db.partos.reduce((a,x)=>a+(+x.nasc||0),0),d=db.desmames.reduce((a,x)=>a+(+x.q||0),0),mort=db.partos.reduce((a,x)=>a+(+x.mortos||0),0);
+let en=db.financeiro.filter(x=>x.tipo==='entrada').reduce((a,x)=>a+(+x.valor||0),0),sa=db.financeiro.filter(x=>x.tipo==='saida').reduce((a,x)=>a+(+x.valor||0),0);
+let r=bal('racao'),c=bal('carne');sM.textContent=db.matrizes.length;sP.textContent=p.length;sN.textContent=n;sD.textContent=d;sSaldo.textContent=money(en-sa);sRacao.textContent=r.toFixed(2)+' kg';sCarne.textContent=c.toFixed(2)+' kg';eRacao.textContent=r.toFixed(2)+' kg';eCarne.textContent=c.toFixed(2)+' kg';fE.textContent=money(en);fS.textContent=money(sa);fB.textContent=money(en-sa);
+list.innerHTML=db.matrizes.length?db.matrizes.map(x=>`<div class="item"><div class="row"><div><b>${esc(x.num)} - ${esc(x.name)}</b><div class="small">${esc(x.race||'Raça não informada')}</div></div><span class="tag">Matriz</span></div><div class="actions"><button class="secondary" onclick="editM(${x.id})">✏️ Editar</button><button class="danger" onclick="delM(${x.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhuma matriz cadastrada.</div>';
+stockList.innerHTML=db.estoque.length?[...db.estoque].reverse().map(x=>`<div class="item"><div class="row"><div><b>${x.tipo==='entrada'?'➕ Entrada':'➖ Saída'} de ${x.item==='racao'?'ração':'carne'}</b><div class="small">${esc(x.data)} • ${esc(x.desc||'')}</div></div><b class="${x.tipo==='entrada'?'in':'out'}">${x.tipo==='entrada'?'+':'-'}${(+x.qtd).toFixed(2)} kg</b></div><div class="actions"><button class="secondary" onclick="editS(${x.id})">✏️ Editar</button><button class="danger" onclick="delS(${x.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhuma entrada ou saída cadastrada.</div>';
+finList.innerHTML=db.financeiro.length?[...db.financeiro].reverse().map(x=>`<div class="item"><div class="row"><div><b>${x.tipo==='entrada'?'➕':'➖'} ${esc(x.cat||'Outros')}</b><div class="small">${esc(x.data)} • ${esc(x.desc||'')}</div></div><b class="${x.tipo==='entrada'?'in':'out'}">${x.tipo==='entrada'?'+':'-'} ${money(x.valor)}</b></div><div class="actions"><button class="secondary" onclick="editF(${x.id})">✏️ Editar</button><button class="danger" onclick="delF(${x.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum lançamento financeiro.</div>';
+history.innerHTML=[...db.partos].reverse().map(x=>`<div class="item"><b>Parto • ${esc(nm(x.matriz))}</b><div class="small">${esc(x.data)} • ${x.nasc||0} nascidos • ${x.vivos||0} vivos • ${x.mortos||0} mortos</div></div>`).join('')||'<div class="empty">Nenhum parto registrado.</div>';
+rrN.textContent=n;rrD.textContent=d;rrP.textContent=db.partos.length;rrM.textContent=(n?(mort/n*100).toFixed(1):0)+'%';
+let ev=[...db.coberturas].slice(-3).map(x=>'Cobertura: '+nm(x.matriz)+' em '+x.data).concat([...db.partos].slice(-3).map(x=>'Parto: '+nm(x.matriz)+' em '+x.data));events.innerHTML=ev.length?ev.reverse().map(x=>`<div class="item">${esc(x)}</div>`).join(''):'<div class="empty">Nenhum evento cadastrado.</div>';
+}
+document.querySelectorAll('input[type=date]').forEach(x=>x.value=today());render();
+</script>
 </body>
 </html>
