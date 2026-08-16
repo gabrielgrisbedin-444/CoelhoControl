@@ -73,7 +73,7 @@ db.matrizes=db.matrizes||[];db.coberturas=db.coberturas||[];db.partos=db.partos|
 let mid=null,sid=null,fid=null;
 const save=()=>localStorage.setItem(key,JSON.stringify(db)),today=()=>new Date().toISOString().slice(0,10);
 const money=v=>(Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-const esc=s=>String(s??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function show(id,b){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(b){document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active')}render();scrollTo(0,0)}
 function opts(id){let e=document.getElementById(id);e.innerHTML=db.matrizes.map(m=>`<option value="${m.id}">${esc(m.num)} - ${esc(m.name)}</option>`).join('')||'<option value="">Cadastre uma matriz primeiro</option>'}
 function novoM(){mid=null;mTitle.textContent='Nova matriz';['mnum','mname','mrace','mbirth','mobs'].forEach(x=>document.getElementById(x).value='');show('nova')}
