@@ -5,129 +5,175 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#159447">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="CoelhoControl">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-180.png">
 <title>CoelhoControl</title>
 <style>
-:root{--g:#159447;--gl:#eaf8ef;--text:#183027;--muted:#6b7b74;--bg:#f5f7f6;--card:#fff;--line:#e2e9e5}
+:root{--g:#159447;--gl:#eaf8ef;--text:#183027;--muted:#6b7b74;--bg:#f5f7f6;--card:#fff;--line:#e2e9e5;--red:#c0392b}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
-header{background:var(--g);color:#fff;padding:18px 16px 14px;position:sticky;top:0;z-index:5}
-h1,h2,h3,p{margin:0}.top{display:flex;justify-content:space-between;align-items:center}.brand{font-size:22px;font-weight:800}
-main{max-width:760px;margin:auto;padding:16px 16px 90px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 2px 8px #00000008}
+header{background:var(--g);color:#fff;padding:18px 16px 14px;position:sticky;top:0;z-index:5}.top{display:flex;justify-content:space-between;align-items:center}.brand{font-size:22px;font-weight:800}
+main{max-width:760px;margin:auto;padding:16px 14px 92px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 2px 8px #00000008}
 .stat b{display:block;font-size:25px;color:var(--g)}.stat span{font-size:12px;color:var(--muted)}
-.section{margin:20px 0 10px;font-size:16px}.event{display:flex;gap:10px;align-items:center;margin:8px 0}.dot{width:10px;height:10px;border-radius:50%;background:var(--g);flex:none}
-button{border:0;border-radius:10px;padding:11px 14px;background:var(--g);color:#fff;font-weight:700;cursor:pointer}.secondary{background:#edf5ef;color:var(--g)}
-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;z-index:10}
-nav button{background:transparent;color:var(--muted);border-radius:0;flex:1;max-width:150px;font-size:11px;padding:10px 4px}nav button.active{color:var(--g)}
-.page{display:none}.page.active{display:block}.row{display:flex;justify-content:space-between;gap:8px;align-items:center}.rabbit{padding:12px 0;border-bottom:1px solid var(--line)}.tag{font-size:11px;padding:5px 8px;border-radius:8px;background:#eaf8ef;color:#16743b}
-label{display:block;font-size:12px;font-weight:700;margin:12px 0 5px}input,select,textarea{width:100%;padding:11px;border:1px solid #d5dfda;border-radius:9px;background:#fff;font:inherit}textarea{min-height:70px}
-.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.actions{display:flex;gap:8px;margin-top:14px}.actions button{flex:1}
-.empty{color:var(--muted);padding:20px 0;text-align:center}
-@media(max-width:480px){main{padding:14px 12px 90px}.formgrid{grid-template-columns:1fr}}
+.section{margin:20px 0 10px;font-size:17px}.page{display:none}.page.active{display:block}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center}.rabbit{padding:12px 0;border-bottom:1px solid var(--line)}.tag{font-size:11px;padding:5px 8px;border-radius:8px;background:var(--gl);color:#16743b}
+button{border:0;border-radius:10px;padding:11px 14px;background:var(--g);color:#fff;font-weight:700;cursor:pointer}.secondary{background:#edf5ef;color:var(--g)}.danger{background:#fdecea;color:var(--red)}
+.actions{display:flex;gap:8px;margin-top:12px}.actions button{flex:1}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;z-index:10}
+nav button{background:transparent;color:var(--muted);border-radius:0;flex:1;font-size:11px;padding:9px 3px}nav button.active{color:var(--g)}
+label{display:block;font-size:12px;font-weight:700;margin:11px 0 5px}input,select,textarea{width:100%;padding:11px;border:1px solid #d5dfda;border-radius:9px;background:#fff;font:inherit}textarea{min-height:70px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.empty{color:var(--muted);padding:20px;text-align:center}
+.money{font-size:23px;font-weight:800}.in{color:#168447}.out{color:var(--red)}.balance{font-size:28px;color:var(--g)}
+.small{font-size:12px;color:var(--muted)}
+@media(max-width:480px){.formgrid{grid-template-columns:1fr}main{padding-bottom:96px}}
 </style>
 </head>
 <body>
-<header><div class="top"><div class="brand">🐇 CoelhoControl</div><div>🔔</div></div></header>
+<header><div class="top"><div class="brand">ð CoelhoControl</div><div>ð</div></div></header>
 <main>
+
 <section id="home" class="page active">
-<h2>Olá! 👋</h2><p style="color:var(--muted);margin-top:4px">Controle da sua criação de coelhos</p>
+<h2>OlÃ¡! ð</h2><p class="small" style="font-size:16px;margin-top:5px">Controle da sua criaÃ§Ã£o de coelhos</p>
 <div class="grid" style="margin-top:14px">
-<div class="card stat"><b id="sM">0</b><span>Matrizes</span></div>
-<div class="card stat"><b id="sP">0</b><span>Fêmeas prenhes</span></div>
-<div class="card stat"><b id="sN">0</b><span>Nascidos</span></div>
-<div class="card stat"><b id="sD">0</b><span>Desmamados</span></div>
+<div class="card stat"><b id="sM">0</b><span>Matrizes</span></div><div class="card stat"><b id="sP">0</b><span>FÃªmeas prenhes</span></div>
+<div class="card stat"><b id="sN">0</b><span>Nascidos</span></div><div class="card stat"><b id="sD">0</b><span>Desmamados</span></div>
+<div class="card stat"><b id="sSaldo">R$ 0,00</b><span>Saldo</span></div><div class="card stat"><b id="sRacao">0 kg</b><span>RaÃ§Ã£o disponÃ­vel</span></div>
+<div class="card stat"><b id="sCarne">0 kg</b><span>Carne disponÃ­vel</span></div>
 </div>
-<h3 class="section">Próximos eventos</h3><div id="events" class="card"></div>
+<h3 class="section">PrÃ³ximos eventos</h3><div id="events" class="card"></div>
 </section>
 
 <section id="matrizes" class="page">
-<div class="row"><h2>Matrizes</h2><button onclick="show('nova')">+ Nova</button></div>
+<div class="row"><h2>Matrizes</h2><button onclick="novoM()">+ Nova</button></div>
 <div id="list" class="card" style="margin-top:12px"></div>
 </section>
 
 <section id="nova" class="page">
-<h2>Nova matriz</h2>
-<div class="card" style="margin-top:12px"><div class="formgrid">
-<div><label>Número</label><input id="mnum" placeholder="M01"></div>
-<div><label>Nome</label><input id="mname" placeholder="Coelha 01"></div>
-<div><label>Raça</label><input id="mrace" placeholder="Nova Zelândia"></div>
-<div><label>Data de nascimento</label><input id="mbirth" type="date"></div>
-<div class="full"><label>Observações</label><textarea id="mobs"></textarea></div>
-</div><div class="actions"><button class="secondary" onclick="show('matrizes')">Cancelar</button><button onclick="saveM()">Salvar matriz</button></div></div>
+<h2 id="formMTitle">Nova matriz</h2><div class="card" style="margin-top:12px"><div class="formgrid">
+<div><label>NÃºmero</label><input id="mnum" placeholder="M01"></div><div><label>Nome</label><input id="mname" placeholder="Coelha 01"></div>
+<div><label>RaÃ§a</label><input id="mrace" placeholder="Nova ZelÃ¢ndia"></div><div><label>Data de nascimento</label><input id="mbirth" type="date"></div>
+<div class="full"><label>ObservaÃ§Ãµes</label><textarea id="mobs"></textarea></div></div>
+<div class="actions"><button class="secondary" onclick="show('matrizes')">Cancelar</button><button onclick="saveM()">Salvar</button></div></div>
 </section>
 
 <section id="repro" class="page">
-<div class="row"><h2>Reprodução</h2><button onclick="show('cobertura')">+ Cobertura</button></div>
-<div class="card" style="margin-top:12px">
-<div class="formgrid"><div><label>Matriz</label><select id="rmat"></select></div><div><label>Macho</label><input id="rmacho" placeholder="R01"></div><div><label>Data da cobertura</label><input id="rcov" type="date"></div></div>
+<div class="row"><h2>ReproduÃ§Ã£o</h2><button onclick="show('cobertura')">+ Cobertura</button></div>
+<div class="card" style="margin-top:12px"><div class="formgrid">
+<div><label>Matriz</label><select id="rmat"></select></div><div><label>Macho</label><input id="rmacho" placeholder="R01"></div>
+<div><label>Data da cobertura</label><input id="rcov" type="date"></div></div>
 <div class="actions"><button onclick="saveR()">Registrar cobertura</button></div></div>
 <h3 class="section">Partos e desmames</h3><div id="history" class="card"></div>
+<div class="actions"><button onclick="show('parto')">+ Parto</button><button onclick="show('desmame')">+ Desmame</button></div>
 </section>
 
-<section id="cobertura" class="page">
-<h2>Nova cobertura</h2><div class="card" style="margin-top:12px">
+<section id="cobertura" class="page"><h2>Nova cobertura</h2><div class="card">
 <label>Matriz</label><select id="cmat"></select><label>Macho/reprodutor</label><input id="cmacho" placeholder="R01 - Gigante">
-<label>Data da cobertura</label><input id="cdata" type="date"><p style="font-size:12px;color:var(--muted);margin-top:10px">A previsão do parto será calculada automaticamente.</p>
-<div class="actions"><button class="secondary" onclick="show('repro')">Cancelar</button><button onclick="saveCob()">Salvar cobertura</button></div></div>
-</section>
+<label>Data da cobertura</label><input id="cdata" type="date"><div class="actions"><button class="secondary" onclick="show('repro')">Cancelar</button><button onclick="saveCob()">Salvar cobertura</button></div></div></section>
 
-<section id="parto" class="page">
-<h2>Novo parto</h2><div class="card" style="margin-top:12px">
+<section id="parto" class="page"><h2>Novo parto</h2><div class="card">
 <label>Matriz</label><select id="bmat"></select><label>Data do parto</label><input id="bdata" type="date">
 <div class="formgrid"><div><label>Nascidos</label><input id="bn" type="number" min="0"></div><div><label>Vivos</label><input id="bv" type="number" min="0"></div><div><label>Mortos</label><input id="bm" type="number" min="0"></div></div>
-<label>Observações</label><textarea id="bobs"></textarea><div class="actions"><button onclick="saveBirth()">Salvar parto</button></div></div>
+<label>ObservaÃ§Ãµes</label><textarea id="bobs"></textarea><div class="actions"><button onclick="saveBirth()">Salvar parto</button></div></div></section>
+
+<section id="desmame" class="page"><h2>Novo desmame</h2><div class="card">
+<label>Matriz</label><select id="dmat"></select><div class="formgrid"><div><label>Data nascimento</label><input id="dnasc" type="date"></div><div><label>Data desmame</label><input id="ddes" type="date"></div><div><label>Quantidade</label><input id="dq" type="number" min="0"></div><div><label>Peso mÃ©dio (kg)</label><input id="dp" type="number" step="0.01"></div></div>
+<label>Destino</label><select id="ddest"><option>Engorda</option><option>ReproduÃ§Ã£o</option><option>Venda</option></select><div class="actions"><button onclick="saveWean()">Salvar desmame</button></div></div></section>
+
+<section id="saude" class="page"><div class="row"><h2>SaÃºde</h2><button onclick="addHealth()">+ Registrar</button></div><div id="health" class="card" style="margin-top:12px"></div></section>
+
+<section id="financeiro" class="page">
+<div class="row"><h2>ð° Financeiro</h2><button onclick="novoFin()">+ LanÃ§amento</button></div>
+<div class="grid" style="margin-top:12px">
+<div class="card stat"><b class="in" id="fEntradas">R$ 0,00</b><span>Entradas</span></div>
+<div class="card stat"><b class="out" id="fSaidas">R$ 0,00</b><span>SaÃ­das</span></div>
+<div class="card stat" style="grid-column:1/-1"><b class="balance" id="fSaldo">R$ 0,00</b><span>Saldo</span></div>
+</div>
+<h3 class="section">Estoque</h3>
+<div class="grid">
+<div class="card stat"><b id="fRacao">0 kg</b><span>RaÃ§Ã£o disponÃ­vel</span></div>
+<div class="card stat"><b id="fCarne">0 kg</b><span>Carne disponÃ­vel</span></div>
+</div>
+<h3 class="section">LanÃ§amentos</h3><div id="finList" class="card"></div>
 </section>
 
-<section id="desmame" class="page">
-<h2>Novo desmame</h2><div class="card" style="margin-top:12px">
-<label>Matriz</label><select id="dmat"></select><div class="formgrid"><div><label>Data nascimento</label><input id="dnasc" type="date"></div><div><label>Data desmame</label><input id="ddes" type="date"></div><div><label>Quantidade</label><input id="dq" type="number" min="0"></div><div><label>Peso médio (kg)</label><input id="dp" type="number" step="0.01"></div></div>
-<label>Destino</label><select id="ddest"><option>Engorda</option><option>Reprodução</option><option>Venda</option></select><div class="actions"><button onclick="saveWean()">Salvar desmame</button></div></div>
-</section>
-
-<section id="saude" class="page">
-<div class="row"><h2>Vacinas e medicamentos</h2><button onclick="addHealth()">+ Registrar</button></div><div id="health" class="card" style="margin-top:12px"></div>
-</section>
-
-<section id="rel" class="page">
-<h2>Relatórios</h2><div class="grid" style="margin-top:12px">
-<div class="card stat"><b id="rrN">0</b><span>Total nascidos</span></div><div class="card stat"><b id="rrD">0</b><span>Total desmamados</span></div><div class="card stat"><b id="rrP">0</b><span>Partos registrados</span></div><div class="card stat"><b id="rrM">0%</b><span>Taxa de mortalidade</span></div>
+<section id="novaFin" class="page"><h2 id="finTitle">Novo lanÃ§amento</h2><div class="card">
+<label>Tipo</label><select id="ftipo" onchange="toggleEstoque()"><option value="entrada">Entrada</option><option value="saida">SaÃ­da</option></select>
+<label>Categoria</label><select id="fcat"><option>Venda de carne</option><option>Venda de coelhos</option><option>RaÃ§Ã£o</option><option>Medicamentos</option><option>Limpeza</option><option>Transporte</option><option>ManutenÃ§Ã£o</option><option>Abate</option><option>Embalagens</option><option>Outros</option></select>
+<label>DescriÃ§Ã£o</label><input id="fdesc" placeholder="Ex.: venda de 10 kg de carne">
+<div class="formgrid"><div><label>Data</label><input id="fdata" type="date"></div><div><label>Valor (R$)</label><input id="fvalor" type="number" step="0.01" min="0"></div></div>
+<div class="formgrid"><div><label>Tipo de estoque</label><select id="festoque"><option value="nenhum">Nenhum</option><option value="racao">RaÃ§Ã£o (kg)</option><option value="carne">Carne (kg)</option></select></div><div><label>Quantidade (kg)</label><input id="fkg" type="number" step="0.01" min="0" value="0"></div></div>
+<label>ObservaÃ§Ã£o</label><textarea id="fobs"></textarea>
+<div class="actions"><button class="secondary" onclick="show('financeiro')">Cancelar</button><button onclick="saveFin()">Salvar lanÃ§amento</button></div>
 </div></section>
+
+<section id="rel" class="page"><h2>RelatÃ³rios</h2><div class="grid" style="margin-top:12px">
+<div class="card stat"><b id="rrN">0</b><span>Total nascidos</span></div><div class="card stat"><b id="rrD">0</b><span>Total desmamados</span></div>
+<div class="card stat"><b id="rrP">0</b><span>Partos registrados</span></div><div class="card stat"><b id="rrM">0%</b><span>Taxa de mortalidade</span></div>
+</div></section>
+
 </main>
 <nav>
-<button class="active" onclick="show('home',this)">🏠<br>Início</button>
-<button onclick="show('matrizes',this)">🐰<br>Matrizes</button>
-<button onclick="show('repro',this)">❤️<br>Reprodução</button>
-<button onclick="show('saude',this)">💉<br>Saúde</button>
-<button onclick="show('rel',this)">📊<br>Relatórios</button>
+<button class="active" onclick="show('home',this)">ð <br>InÃ­cio</button>
+<button onclick="show('matrizes',this)">ð°<br>Matrizes</button>
+<button onclick="show('repro',this)">â¤ï¸<br>ReproduÃ§Ã£o</button>
+<button onclick="show('saude',this)">ð<br>SaÃºde</button>
+<button onclick="show('financeiro',this)">ð°<br>Financeiro</button>
+<button onclick="show('rel',this)">ð<br>RelatÃ³rios</button>
 </nav>
+
 <script>
 const key='coelhocontrol_v1';
 let db=JSON.parse(localStorage.getItem(key)||'{"matrizes":[],"coberturas":[],"partos":[],"desmames":[],"saude":[]}');
+db.matrizes=db.matrizes||[];db.coberturas=db.coberturas||[];db.partos=db.partos||[];db.desmames=db.desmames||[];db.saude=db.saude||[];db.financeiro=db.financeiro||[];
+let editMId=null,editFId=null;
 const save=()=>localStorage.setItem(key,JSON.stringify(db));
 const today=()=>new Date().toISOString().slice(0,10);
+const money=v=>(Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 function show(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');if(btn){document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}render();window.scrollTo(0,0)}
-function opts(id){document.getElementById(id).innerHTML=db.matrizes.map(m=>`<option value="${m.id}">${m.num} - ${m.name}</option>`).join('')}
-function render(){
-document.getElementById('sM').textContent=db.matrizes.length;
-document.getElementById('sP').textContent=db.coberturas.filter(x=>x.status==='Prenhe').length;
-document.getElementById('sN').textContent=db.partos.reduce((a,x)=>a+(+x.n||0),0);
-document.getElementById('sD').textContent=db.desmames.reduce((a,x)=>a+(+x.q||0),0);
-document.getElementById('list').innerHTML=db.matrizes.length?db.matrizes.map(m=>`<div class="rabbit"><div class="row"><div><b>${m.num} - ${m.name}</b><div style="font-size:12px;color:var(--muted)">${m.race||''}</div></div><span class="tag">${m.status||'Disponível'}</span></div></div>`).join(''):'<div class="empty">Nenhuma matriz cadastrada.</div>';
-['rmat','cmat','bmat','dmat'].forEach(opts);
-document.getElementById('history').innerHTML=[...db.partos.map(x=>`<div class="rabbit">🐣 <b>Parto</b> — ${x.date} — ${x.v} vivos (${x.m} mortos)</div>`),...db.desmames.map(x=>`<div class="rabbit">🍼 <b>Desmame</b> — ${x.date} — ${x.q} coelhos</div>`)].join('')||'<div class="empty">Nenhum registro ainda.</div>';
-document.getElementById('health').innerHTML=db.saude.length?db.saude.map(x=>`<div class="rabbit">💉 <b>${x.prod}</b><br><small>${x.animal} — aplicado em ${x.date}${x.next?' — próxima: '+x.next:''}</small></div>`).join(''):'<div class="empty">Nenhum medicamento ou vacina registrado.</div>';
-let n=db.partos.reduce((a,x)=>a+(+x.n||0),0),v=db.partos.reduce((a,x)=>a+(+x.v||0),0),m=db.partos.reduce((a,x)=>a+(+x.m||0),0);
-document.getElementById('rrN').textContent=n;document.getElementById('rrD').textContent=db.desmames.reduce((a,x)=>a+(+x.q||0),0);document.getElementById('rrP').textContent=db.partos.length;document.getElementById('rrM').textContent=n?Math.round(m/n*100)+'%':'0%';
-let ev=[];db.coberturas.filter(x=>x.status==='Prenhe').forEach(x=>ev.push(`🤰 Parto previsto — ${x.date}`));db.desmames.forEach(x=>ev.push(`🍼 Desmame — ${x.date}`));document.getElementById('events').innerHTML=ev.length?ev.slice(0,6).map(x=>`<div class="event"><span class="dot"></span>${x}</div>`).join(''):'<div class="empty">Nenhum evento cadastrado.</div>';
+function opts(id){let el=document.getElementById(id);if(el)el.innerHTML=db.matrizes.map(m=>`<option value="${m.id}">${m.num} - ${m.name}</option>`).join('')}
+function novoM(){editMId=null;document.getElementById('formMTitle').textContent='Nova matriz';['mnum','mname','mrace','mbirth','mobs'].forEach(id=>document.getElementById(id).value='');show('nova')}
+function saveM(){
+ let m={id:editMId||Date.now(),num:mnum.value.trim(),name:mname.value.trim(),race:mrace.value.trim(),birth:mbirth.value,obs:mobs.value,status:'DisponÃ­vel'};
+ if(!m.num||!m.name)return alert('Informe nÃºmero e nome.');
+ if(editMId){let i=db.matrizes.findIndex(x=>x.id===editMId);if(i>=0)db.matrizes[i]={...db.matrizes[i],...m}}
+ else db.matrizes.push(m);
+ save();editMId=null;show('matrizes');
 }
-function saveM(){let m={id:Date.now(),num:mnum.value,name:mname.value,race:mrace.value,birth:mbirth.value,obs:mobs.value,status:'Disponível'};if(!m.num||!m.name)return alert('Informe número e nome.');db.matrizes.push(m);save();show('matrizes')}
+function editM(id){let m=db.matrizes.find(x=>x.id===id);if(!m)return;editMId=id;formMTitle.textContent='Editar matriz';mnum.value=m.num||'';mname.value=m.name||'';mrace.value=m.race||'';mbirth.value=m.birth||'';mobs.value=m.obs||'';show('nova')}
+function delM(id){if(!confirm('Excluir esta matriz?'))return;db.matrizes=db.matrizes.filter(x=>x.id!==id);save();render()}
 function saveR(){if(!rmat.value)return alert('Cadastre uma matriz primeiro.');db.coberturas.push({id:Date.now(),mat:rmat.value,macho:rmacho.value,date:rcov.value,status:'Aguardando'});save();alert('Cobertura registrada.');show('repro')}
-function saveCob(){let d=new Date(cdata.value+'T12:00:00');d.setDate(d.getDate()+31);db.coberturas.push({id:Date.now(),mat:cmat.value,macho:cmacho.value,date:d.toISOString().slice(0,10),status:'Prenhe',coverage:cdata.value});save();alert('Cobertura salva e parto previsto para '+d.toLocaleDateString('pt-BR')+'.');show('repro')}
-function saveBirth(){let x={id:Date.now(),mat:bmat.value,date:bdata.value||today(),n:bn.value,v:bv.value,m:bm.value,obs:bobs.value};db.partos.push(x);save();alert('Parto salvo!');show('repro')}
+function saveCob(){let d=new Date((cdata.value||today())+'T12:00:00');d.setDate(d.getDate()+31);db.coberturas.push({id:Date.now(),mat:cmat.value,macho:cmacho.value,date:d.toISOString().slice(0,10),status:'Prenhe',coverage:cdata.value||today()});save();alert('Cobertura salva.');show('repro')}
+function saveBirth(){db.partos.push({id:Date.now(),mat:bmat.value,date:bdata.value||today(),n:bn.value,v:bv.value,m:bm.value,obs:bobs.value});save();alert('Parto salvo!');show('repro')}
 function saveWean(){db.desmames.push({id:Date.now(),mat:dmat.value,date:ddes.value||today(),birth:dnasc.value,q:dq.value,p:dp.value,dest:ddest.value});save();alert('Desmame salvo!');show('repro')}
-function addHealth(){let animal=prompt('Animal/matriz:');if(!animal)return;let prod=prompt('Vacina/medicamento:');if(!prod)return;let date=prompt('Data (AAAA-MM-DD):',today());let next=prompt('Próxima aplicação (AAAA-MM-DD), se houver:','');db.saude.push({animal,prod,date,next});save();render()}
+function delParto(id){if(confirm('Excluir este parto?')){db.partos=db.partos.filter(x=>x.id!==id);save();render()}}
+function delWean(id){if(confirm('Excluir este desmame?')){db.desmames=db.desmames.filter(x=>x.id!==id);save();render()}}
+function addHealth(){let animal=prompt('Animal/matriz:');if(!animal)return;let prod=prompt('Vacina/medicamento:');if(!prod)return;let date=prompt('Data (AAAA-MM-DD):',today());let next=prompt('PrÃ³xima aplicaÃ§Ã£o (AAAA-MM-DD), se houver:','');db.saude.push({id:Date.now(),animal,prod,date,next});save();render()}
+function delHealth(id){if(confirm('Excluir este registro?')){db.saude=db.saude.filter(x=>x.id!==id);save();render()}}
+function novoFin(){editFId=null;finTitle.textContent='Novo lanÃ§amento';ftipo.value='entrada';fcat.value='Venda de carne';fdesc.value='';fdata.value=today();fvalor.value='';festoque.value='nenhum';fkg.value='0';fobs.value='';show('novaFin')}
+function saveFin(){
+ let x={id:editFId||Date.now(),tipo:ftipo.value,categoria:fcat.value,descricao:fdesc.value,data:fdata.value||today(),valor:Number(fvalor.value)||0,estoque:festqueSafe(),kg:Number(fkg.value)||0,obs:fobs.value};
+ if(!x.valor && !x.kg)return alert('Informe o valor ou a quantidade.');
+ if(editFId){let i=db.financeiro.findIndex(a=>a.id===editFId);if(i>=0)db.financeiro[i]={...db.financeiro[i],...x}}else db.financeiro.push(x);
+ save();editFId=null;show('financeiro');
+}
+function festqueSafe(){return festoque.value}
+function editFin(id){let x=db.financeiro.find(a=>a.id===id);if(!x)return;editFId=id;finTitle.textContent='Editar lanÃ§amento';ftipo.value=x.tipo||'entrada';fcat.value=x.categoria||'Outros';fdesc.value=x.descricao||'';fdata.value=x.data||today();fvalor.value=x.valor||'';festoque.value=x.estoque||'nenhum';fkg.value=x.kg||0;fobs.value=x.obs||'';show('novaFin')}
+function delFin(id){if(confirm('Excluir este lanÃ§amento?')){db.financeiro=db.financeiro.filter(x=>x.id!==id);save();render()}}
+function toggleEstoque(){}
+function render(){
+ sM.textContent=db.matrizes.length;sP.textContent=db.coberturas.filter(x=>x.status==='Prenhe').length;
+ sN.textContent=db.partos.reduce((a,x)=>a+(+x.n||0),0);sD.textContent=db.desmames.reduce((a,x)=>a+(+x.q||0),0);
+ list.innerHTML=db.matrizes.length?db.matrizes.map(m=>`<div class="rabbit"><div class="row"><div><b>${m.num} - ${m.name}</b><div class="small">${m.race||''}</div></div><span class="tag">${m.status||'DisponÃ­vel'}</span></div><div class="actions"><button class="secondary" onclick="editM(${m.id})">âï¸ Editar</button><button class="danger" onclick="delM(${m.id})">ðï¸ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhuma matriz cadastrada.</div>';
+ ['rmat','cmat','bmat','dmat'].forEach(opts);
+ history.innerHTML=[...db.partos.map(x=>`<div class="rabbit">ð£ <b>Parto</b> â ${x.date} â ${x.v} vivos (${x.m} mortos)<div class="actions"><button class="danger" onclick="delParto(${x.id})">ðï¸ Excluir</button></div></div>`),...db.desmames.map(x=>`<div class="rabbit">ð¼ <b>Desmame</b> â ${x.date} â ${x.q} coelhos<div class="actions"><button class="danger" onclick="delWean(${x.id})">ðï¸ Excluir</button></div></div>`)].join('')||'<div class="empty">Nenhum registro ainda.</div>';
+ health.innerHTML=db.saude.length?db.saude.map(x=>`<div class="rabbit">ð <b>${x.prod}</b><br><small>${x.animal} â ${x.date}${x.next?' â prÃ³xima: '+x.next:''}</small><div class="actions"><button class="danger" onclick="delHealth(${x.id})">ðï¸ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum medicamento ou vacina registrado.</div>';
+ let entradas=db.financeiro.filter(x=>x.tipo==='entrada').reduce((a,x)=>a+(+x.valor||0),0),saidas=db.financeiro.filter(x=>x.tipo==='saida').reduce((a,x)=>a+(+x.valor||0),0),saldo=entradas-saidas;
+ let rq=db.financeiro.filter(x=>x.estoque==='racao').reduce((a,x)=>a+(x.tipo==='entrada'?1:-1)*(+x.kg||0),0);
+ let cr=db.financeiro.filter(x=>x.estoque==='carne').reduce((a,x)=>a+(x.tipo==='entrada'?1:-1)*(+x.kg||0),0);
+ fEntradas.textContent=money(entradas);fSaidas.textContent=money(saidas);fSaldo.textContent=money(saldo);sSaldo.textContent=money(saldo);
+ fRacao.textContent=rq.toFixed(2)+' kg';sRacao.textContent=rq.toFixed(2)+' kg';fCarne.textContent=cr.toFixed(2)+' kg';sCarne.textContent=cr.toFixed(2)+' kg';
+ finList.innerHTML=db.financeiro.length?[...db.financeiro].sort((a,b)=>(b.data||'').localeCompare(a.data||'')).map(x=>`<div class="rabbit"><div class="row"><div><b>${x.descricao||x.categoria}</b><div class="small">${x.data} Â· ${x.categoria}${x.estoque&&x.estoque!=='nenhum'?' Â· '+x.kg+' kg':''}</div></div><b class="${x.tipo==='entrada'?'in':'out'}">${x.tipo==='entrada'?'+':'-'} ${money(x.valor)}</b></div><div class="actions"><button class="secondary" onclick="editFin(${x.id})">âï¸ Editar</button><button class="danger" onclick="delFin(${x.id})">ðï¸ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum lanÃ§amento financeiro.</div>';
+ rrN.textContent=db.partos.reduce((a,x)=>a+(+x.n||0),0);rrD.textContent=db.desmames.reduce((a,x)=>a+(+x.q||0),0);rrP.textContent=db.partos.length;let n=+rrN.textContent||0,m=db.partos.reduce((a,x)=>a+(+x.m||0),0);rrM.textContent=n?Math.round(m/n*100)+'%':'0%';
+ let ev=[];db.coberturas.filter(x=>x.status==='Prenhe').forEach(x=>ev.push('ð¤° Parto previsto â '+x.date));db.desmames.forEach(x=>ev.push('ð¼ Desmame â '+x.date));events.innerHTML=ev.length?ev.slice(0,6).map(x=>`<div style="padding:7px 0">ð¢ ${x}</div>`).join(''):'<div class="empty">Nenhum evento cadastrado.</div>';
+}
 render();
 </script>
-<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}</script></body></html>
+</body></html>
