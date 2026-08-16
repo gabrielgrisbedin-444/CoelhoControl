@@ -43,13 +43,20 @@ body.dark nav button.active{color:#66d694}
 /* Identidade visual de coelhos */
 .rabbit-hero{background:linear-gradient(135deg,#eaf8ef,#ffffff);border:1px solid var(--l);border-radius:18px;padding:18px;margin-bottom:14px;overflow:hidden;position:relative}
 .rabbit-hero h2{margin:0 0 5px}
-.rabbit-hero .rabbit-art{font-size:58px;position:absolute;right:16px;top:8px;opacity:.9}
+.rabbit-hero .rabbit-art{font-size:100px;position:absolute;right:18px;top:0;opacity:1;line-height:1;filter:drop-shadow(0 4px 4px rgba(0,0,0,.12))}
 .photo-box{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.animal-photo{width:110px;height:110px;border-radius:16px;object-fit:cover;border:2px solid var(--l);background:var(--gl)}
-.photo-placeholder{width:110px;height:110px;border-radius:16px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:48px;border:2px solid var(--l)}
+.animal-photo{width:160px;height:160px;border-radius:20px;object-fit:cover;border:3px solid var(--l);background:var(--gl);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.photo-placeholder{width:160px;height:160px;border-radius:20px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:70px;border:3px solid var(--l)}
 .photo-actions{display:flex;gap:8px;flex-wrap:wrap}
 .rabbit-badge{font-size:28px;margin-right:5px}
 body.dark .rabbit-hero{background:linear-gradient(135deg,#173a27,#17201d)}
+
+.animal-card{display:grid;grid-template-columns:160px 1fr;gap:14px;align-items:center;padding:14px;border:1px solid var(--l);border-radius:18px;background:#fff;margin-bottom:12px}
+.animal-card .animal-photo,.animal-card .photo-placeholder{width:160px;height:160px}
+.animal-card h3{margin:0 0 4px;font-size:18px}
+.animal-card .animal-meta{font-size:13px;color:var(--m);line-height:1.6}
+body.dark .animal-card{background:#17201d;border-color:#293630}
+@media(max-width:520px){.animal-card{grid-template-columns:1fr}.animal-card .animal-photo,.animal-card .photo-placeholder{width:100%;height:220px}.animal-card .photo-placeholder{font-size:90px}}
 </style>
 </head>
 <body>
@@ -142,11 +149,34 @@ body.dark .rabbit-hero{background:linear-gradient(135deg,#173a27,#17201d)}
 <div id="alertList" class="card"></div>
 </section>
 
+
+<section id="config" class="page">
+<div class="row"><h2>⚙️ Configurações</h2><span class="tag">CoelhoControl</span></div>
+<div class="card">
+<h3>🎨 Aparência</h3>
+<div class="actions"><button onclick="toggleDarkMode()">🌙 Alternar modo noite</button></div>
+</div>
+<div class="card">
+<h3>🔔 Alertas</h3>
+<label>Parto: avisar</label><select id="cfgParto"><option value="0">No dia</option><option value="1">1 dia antes</option><option value="2">2 dias antes</option><option value="3">3 dias antes</option><option value="5">5 dias antes</option><option value="7">7 dias antes</option></select>
+<label>Desmame: avisar</label><select id="cfgDesmame"><option value="0">No dia</option><option value="1">1 dia antes</option><option value="2">2 dias antes</option><option value="3">3 dias antes</option><option value="5">5 dias antes</option><option value="7">7 dias antes</option></select>
+<div class="actions"><button onclick="saveConfig()">💾 Salvar configurações</button><button class="secondary" onclick="pedirNotificacoes()">🔔 Ativar notificações</button></div>
+</div>
+<div class="card">
+<h3>💾 Backup</h3>
+<div class="actions"><button onclick="exportarBackup()">📤 Exportar backup</button><button class="secondary" onclick="document.getElementById('backupFile').click()">📥 Restaurar backup</button></div>
+<input id="backupFile" type="file" accept=".json,application/json" style="display:none" onchange="importarBackup(this)">
+</div>
+<div class="card">
+<h3>ℹ️ Aplicativo</h3><div class="small">CoelhoControl • Controle da criação de coelhos</div>
+</div>
+</section>
+
 </main>
 
 <nav>
 <button class="active" onclick="show('home',this)">🏠<br>Início</button><button onclick="show('alertas',this)">🔔<br>Alertas</button><button onclick="show('matrizes',this)">🐇<br>Fêmeas</button><button onclick="show('machos',this)">🐇<br>Machos</button><button onclick="show('repro',this)">❤️<br>Reprodução</button><button onclick="show('vendas',this)">💵<br>Vendas</button><button onclick="show('estoque',this)">📦<br>Estoque</button><button onclick="show('financeiro',this)">💰<br>Financeiro</button><button onclick="show('rel',this)">📊<br>Relatórios</button>
-</nav>
+<button onclick="show('config',this)">⚙️<br>Configurações</button></nav>
 
 <script>
 const key='coelhocontrol_v1';let db=JSON.parse(localStorage.getItem(key)||'{}');
@@ -288,7 +318,66 @@ function verificarAlertas(mostrar=false){
   }
 }
 function render(){['cmat','bmat','dmat'].forEach(opts);optsMach('cmacho');animalOpts();let p=db.coberturas.filter(x=>Date.now()-new Date(x.data).getTime()<31*86400000),n=db.partos.reduce((a,x)=>a+(+x.nasc||0),0),d=db.desmames.reduce((a,x)=>a+(+x.q||0),0),mort=db.partos.reduce((a,x)=>a+(+x.mortos||0),0),mortAfter=db.historicos.filter(x=>x.tipo==='Morte de filhotes').reduce((a,x)=>a+(+x.mortos||0),0),en=db.financeiro.filter(x=>x.tipo==='entrada').reduce((a,x)=>a+(+x.valor||0),0),sa=db.financeiro.filter(x=>x.tipo==='saida').reduce((a,x)=>a+(+x.valor||0),0),r=bal('racao'),c=bal('carne'),vQtdTot=db.vendas.reduce((a,x)=>a+(+x.quant||0),0),vTot=db.vendas.reduce((a,x)=>a+(+x.total||0),0);sM.textContent=db.matrizes.length;sMachos.textContent=db.machos.length;sP.textContent=p.length;sN.textContent=n;sD.textContent=d;sSaldo.textContent=money(en-sa);sRacao.textContent=r.toFixed(2)+' kg';sCarne.textContent=c.toFixed(2)+' kg';sVendas.textContent=money(vTot);sMortes.textContent=mortAfter;eRacao.textContent=r.toFixed(2)+' kg';eCarne.textContent=c.toFixed(2)+' kg';fE.textContent=money(en);fS.textContent=money(sa);fB.textContent=money(en-sa);renderMatrizes();renderMachos();renderFicha();renderVendas();stockList.innerHTML=db.estoque.length?[...db.estoque].reverse().map(x=>`<div class="item"><div class="row"><div><b>${x.tipo==='entrada'?'➕ Entrada':'➖ Saída'} de ${x.item==='racao'?'ração':'carne'}</b><div class="small">${esc(x.data)} • ${esc(x.desc||'')}</div></div><b class="${x.tipo==='entrada'?'in':'out'}">${x.tipo==='entrada'?'+':'-'}${(+x.qtd).toFixed(2)} kg</b></div><div class="actions"><button class="secondary" onclick="editS(${x.id})">✏️ Editar</button><button class="danger" onclick="delS(${x.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhuma entrada ou saída cadastrada.</div>';finList.innerHTML=db.financeiro.length?[...db.financeiro].reverse().map(x=>`<div class="item"><div class="row"><div><b>${x.tipo==='entrada'?'➕':'➖'} ${esc(x.cat||'Outros')}</b><div class="small">${esc(x.data)} • ${esc(x.desc||'')}</div></div><b class="${x.tipo==='entrada'?'in':'out'}">${x.tipo==='entrada'?'+':'-'} ${money(x.valor)}</b></div><div class="actions"><button class="secondary" onclick="editF(${x.id})">✏️ Editar</button><button class="danger" onclick="delF(${x.id})">🗑️ Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum lançamento financeiro.</div>';history.innerHTML=[...db.partos].reverse().map(x=>`<div class="item"><b>Parto • ${esc(nm(x.matriz))}</b><div class="small">${esc(x.data)} • ${x.nasc||0} nascidos • ${x.vivos||0} vivos • ${x.mortos||0} mortos</div>${x.obs?`<div class="small">${esc(x.obs)}</div>`:''}<div class="actions"><button class="secondary" onclick="editBirth(${x.id})">✏️ Editar</button><button class="danger" onclick="delBirth(${x.id})">🗑️ Excluir</button></div></div>`).join('')||'<div class="empty">Nenhum parto registrado.</div>';rrN.textContent=n;rrD.textContent=d;rrP.textContent=db.partos.length;rrM.textContent=(n?(mort/n*100).toFixed(1):0)+'%';rrMV.textContent=mortAfter;rrV.textContent=vQtdTot;relResumo.innerHTML=`<p><b>Vendas de animais vivos:</b> ${vQtdTot} animais, ${money(vTot)}</p><p><b>Estoque de ração:</b> ${r.toFixed(2)} kg</p><p><b>Estoque de carne:</b> ${c.toFixed(2)} kg</p><p><b>Saldo financeiro:</b> ${money(en-sa)}</p>`;let ev=[...db.coberturas].slice(-3).map(x=>'Cobertura: '+nm(x.matriz)+' × '+nmMach(x.macho)+' em '+x.data).concat([...db.partos].slice(-3).map(x=>'Parto: '+nm(x.matriz)+' em '+x.data));events.innerHTML=ev.length?ev.reverse().map(x=>`<div class="item">${esc(x)}</div>`).join(''):'<div class="empty">Nenhum evento cadastrado.</div>'};renderAlertas();verificarAlertas()
-function printHtml(title,body){let w=window.open('','_blank');if(!w)return alert('Permita pop-ups para gerar o PDF.');w.document.write(`<html><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:Arial;padding:30px;color:#222}h1,h2{color:#159447}table{width:100%;border-collapse:collapse}td,th{border:1px solid #ccc;padding:8px;text-align:left}.box{border:1px solid #ddd;padding:12px;margin:10px 0;border-radius:8px}.small{color:#666;font-size:12px}@media print{button{display:none}}</style></head><body><h1>🐇 CoelhoControl</h1><h2>${title}</h2>${body}<p class="small">Gerado em ${new Date().toLocaleString('pt-BR')}</p><script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>`);w.document.close()}
+function printHtml(title,body){let w=window.open('','_blank');if(!w)return alert('Permita pop-ups para gerar o PDF.');w.document.write(`<html><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:Arial;padding:30px;color:#222}h1,h2{color:#159447}table{width:100%;border-collapse:collapse}td,th{border:1px solid #ccc;padding:8px;text-align:left}.box{border:1px solid #ddd;padding:12px;margin:10px 0;border-radius:8px}.small{color:#666;font-size:12px}@media print{button{display:none}}</style></head><body><h1>🐇 CoelhoControl</h1><h2>${title}</h2>${body}<p class="small">Gerado em ${new Date().toLocaleString('pt-BR')}</p><script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script>
+<script>
+(function(){
+  const IGNORE=['INPUT','TEXTAREA','SELECT','BUTTON'];
+  let sx=0,sy=0;
+  document.addEventListener('touchstart',e=>{
+    if(e.touches.length!==1)return;
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY;
+  },{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(!e.changedTouches.length)return;
+    if(IGNORE.includes(e.target.tagName))return;
+    const dx=e.changedTouches[0].clientX-sx;
+    const dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)<70 || Math.abs(dx)<Math.abs(dy)*1.3)return;
+    const pages=[...document.querySelectorAll('.page')];
+    const current=document.querySelector('.page.active');
+    let i=pages.indexOf(current);
+    if(i<0)return;
+    i += dx<0 ? 1 : -1;
+    if(i<0)i=pages.length-1;
+    if(i>=pages.length)i=0;
+    const buttons=[...document.querySelectorAll('nav button')];
+    show(pages[i].id,buttons[i]);
+  },{passive:true});
+})();
+</script>
+
+<script>
+function saveConfig(){
+  localStorage.setItem('coelhocontrol_cfg_parto',document.getElementById('cfgParto')?.value||'0');
+  localStorage.setItem('coelhocontrol_cfg_desmame',document.getElementById('cfgDesmame')?.value||'0');
+  alert('Configurações salvas.');
+}
+function toggleDarkMode(){
+  const on=!document.body.classList.contains('dark');
+  document.body.classList.toggle('dark',on);
+  localStorage.setItem('coelhocontrol_tema',on?'escuro':'claro');
+}
+function pedirNotificacoes(){
+  if(!('Notification' in window))return alert('Este navegador não oferece notificações.');
+  Notification.requestPermission().then(p=>alert(p==='granted'?'Notificações ativadas.':'Permissão não concedida.'));
+}
+function exportarBackup(){
+  const raw=localStorage.getItem('coelhocontrol_v1')||'{}';
+  const blob=new Blob([raw],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='coelhocontrol-backup.json';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),500);
+}
+function importarBackup(input){
+  const file=input.files&&input.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{JSON.parse(r.result);localStorage.setItem('coelhocontrol_v1',r.result);alert('Backup restaurado. Recarregue o aplicativo.');location.reload();}
+    catch(e){alert('Arquivo de backup inválido.');}
+  };
+  r.readAsText(file);
+}
+</script>
+</body></html>`);w.document.close()}
 function pdfFicha(){let m=hkind==='f'?db.matrizes.find(x=>String(x.id)===String(hmatriz)):db.machos.find(x=>String(x.id)===String(hmatriz));if(!m)return;let hist=db.historicos.filter(x=>String(x.animal)===String(hmatriz)&&x.kind===hkind).sort((a,b)=>String(a.data).localeCompare(String(b.data)));let body=`<div class="box"><b>Animal:</b> ${esc(m.num)} - ${esc(m.name)}<br><b>Sexo:</b> ${hkind==='f'?'Fêmea':'Macho'}<br><b>Raça:</b> ${esc(m.race||'Não informada')}<br><b>Nascimento:</b> ${esc(m.birth||'Não informado')}</div><table><tr><th>Data</th><th>Evento</th><th>Detalhes</th></tr>${hist.map(x=>`<tr><td>${esc(x.data)}</td><td>${esc(x.tipo)}</td><td>${esc(x.desc||'')} ${x.obs?'<br>'+esc(x.obs):''} ${x.tipo==='Parto'?'<br>'+x.filhotes+' nascidos; '+x.vivos+' vivos; '+x.mortos+' mortos no parto':''}${x.tipo==='Morte de filhotes'?'<br>'+x.mortos+' mortos após parto':''}</td></tr>`).join('')}</table>`;printHtml('Ficha de '+m.name,body)}
 function pdfRelatorio(){let n=db.partos.reduce((a,x)=>a+(+x.nasc||0),0),d=db.desmames.reduce((a,x)=>a+(+x.q||0),0),mort=db.partos.reduce((a,x)=>a+(+x.mortos||0),0),ma=db.historicos.filter(x=>x.tipo==='Morte de filhotes').reduce((a,x)=>a+(+x.mortos||0),0),v=db.vendas.reduce((a,x)=>a+(+x.quant||0),0),vt=db.vendas.reduce((a,x)=>a+(+x.total||0),0),r=bal('racao'),c=bal('carne'),en=db.financeiro.filter(x=>x.tipo==='entrada').reduce((a,x)=>a+(+x.valor||0),0),sa=db.financeiro.filter(x=>x.tipo==='saida').reduce((a,x)=>a+(+x.valor||0),0);let body=`<div class="box"><b>Fêmeas:</b> ${db.matrizes.length}<br><b>Machos:</b> ${db.machos.length}<br><b>Nascidos:</b> ${n}<br><b>Desmamados:</b> ${d}<br><b>Mortos no parto:</b> ${mort}<br><b>Mortos depois do parto:</b> ${ma}<br><b>Animais vivos vendidos:</b> ${v}<br><b>Total de vendas:</b> ${money(vt)}<br><b>Ração disponível:</b> ${r.toFixed(2)} kg<br><b>Carne disponível:</b> ${c.toFixed(2)} kg<br><b>Saldo financeiro:</b> ${money(en-sa)}</div>`;printHtml('Relatório geral',body)}
 temaAutomatico();document.querySelectorAll('input[type=date]').forEach(x=>x.value=today());render();renderAlertas();verificarAlertas();
@@ -337,76 +426,6 @@ temaAutomatico();document.querySelectorAll('input[type=date]').forEach(x=>x.valu
     else irPara(atual-1);
   },{passive:true});
 })();
-  // ===== NAVEGAÇÃO POR DESLIZE =====
-const abas = [
-  'home',
-  'femeas',
-  'machos',
-  'repro',
-  'vendas',
-  'estoque',
-  'financeiro',
-  'rel'
-];
-
-let inicioX = 0;
-let inicioY = 0;
-let deslizando = false;
-
-document.addEventListener('touchstart', function(e) {
-  if (e.touches.length !== 1) return;
-
-  inicioX = e.touches[0].clientX;
-  inicioY = e.touches[0].clientY;
-  deslizando = true;
-}, { passive: true });
-
-document.addEventListener('touchend', function(e) {
-  if (!deslizando) return;
-  deslizando = false;
-
-  const fimX = e.changedTouches[0].clientX;
-  const fimY = e.changedTouches[0].clientY;
-
-  const distanciaX = fimX - inicioX;
-  const distanciaY = fimY - inicioY;
-
-  // Só considera gesto horizontal
-  if (Math.abs(distanciaX) < 70) return;
-  if (Math.abs(distanciaY) > Math.abs(distanciaX)) return;
-
-  // Não interfere em campos de texto
-  const elemento = e.target;
-  if (
-    elemento.tagName === 'INPUT' ||
-    elemento.tagName === 'TEXTAREA' ||
-    elemento.tagName === 'SELECT' ||
-    elemento.tagName === 'BUTTON'
-  ) {
-    return;
-  }
-
-  let atual = document.querySelector('.page.active');
-  if (!atual) return;
-
-  let posicao = abas.indexOf(atual.id);
-  if (posicao === -1) return;
-
-  // Deslizou para a esquerda = próxima aba
-  if (distanciaX < 0) {
-    posicao++;
-  }
-
-  // Deslizou para a direita = aba anterior
-  if (distanciaX > 0) {
-    posicao--;
-  }
-
-  if (posicao < 0) posicao = abas.length - 1;
-  if (posicao >= abas.length) posicao = 0;
-
-  show(abas[posicao]);
-}, { passive: true });
 </script>
 </body>
 </html>
