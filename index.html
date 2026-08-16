@@ -337,6 +337,76 @@ temaAutomatico();document.querySelectorAll('input[type=date]').forEach(x=>x.valu
     else irPara(atual-1);
   },{passive:true});
 })();
+  // ===== NAVEGAÇÃO POR DESLIZE =====
+const abas = [
+  'home',
+  'femeas',
+  'machos',
+  'repro',
+  'vendas',
+  'estoque',
+  'financeiro',
+  'rel'
+];
+
+let inicioX = 0;
+let inicioY = 0;
+let deslizando = false;
+
+document.addEventListener('touchstart', function(e) {
+  if (e.touches.length !== 1) return;
+
+  inicioX = e.touches[0].clientX;
+  inicioY = e.touches[0].clientY;
+  deslizando = true;
+}, { passive: true });
+
+document.addEventListener('touchend', function(e) {
+  if (!deslizando) return;
+  deslizando = false;
+
+  const fimX = e.changedTouches[0].clientX;
+  const fimY = e.changedTouches[0].clientY;
+
+  const distanciaX = fimX - inicioX;
+  const distanciaY = fimY - inicioY;
+
+  // Só considera gesto horizontal
+  if (Math.abs(distanciaX) < 70) return;
+  if (Math.abs(distanciaY) > Math.abs(distanciaX)) return;
+
+  // Não interfere em campos de texto
+  const elemento = e.target;
+  if (
+    elemento.tagName === 'INPUT' ||
+    elemento.tagName === 'TEXTAREA' ||
+    elemento.tagName === 'SELECT' ||
+    elemento.tagName === 'BUTTON'
+  ) {
+    return;
+  }
+
+  let atual = document.querySelector('.page.active');
+  if (!atual) return;
+
+  let posicao = abas.indexOf(atual.id);
+  if (posicao === -1) return;
+
+  // Deslizou para a esquerda = próxima aba
+  if (distanciaX < 0) {
+    posicao++;
+  }
+
+  // Deslizou para a direita = aba anterior
+  if (distanciaX > 0) {
+    posicao--;
+  }
+
+  if (posicao < 0) posicao = abas.length - 1;
+  if (posicao >= abas.length) posicao = 0;
+
+  show(abas[posicao]);
+}, { passive: true });
 </script>
 </body>
 </html>
